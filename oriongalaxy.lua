@@ -1,153 +1,179 @@
-repeat wait() until game:IsLoaded()
+-- Orion Galaxy Hub Refait dans le style Alchemy Hub
+-- Par Nalah avec amour galactique
 
--- Load custom UI (ton fichier oriongalaxy.lua)
-local Orion = loadstring(game:HttpGet("https://raw.githubusercontent.com/HaxHaxxer/nalahhub/main/oriongalaxy.lua"))()
+local Orion = {}
 
--- Toggle UI with Ctrl gauche (KeyCode 17)
-local UIS = game:GetService("UserInputService")
-local isOpen = true
+function Orion:CreateOrion(hubTitle)
+    local ScreenGui = Instance.new("ScreenGui")
+    local Main = Instance.new("Frame")
+    local UICorner = Instance.new("UICorner")
+    local LeftMenu = Instance.new("Frame")
+    local UIListLayout = Instance.new("UIListLayout")
+    local TabPages = Instance.new("Folder")
+    local UserInputService = game:GetService("UserInputService")
+    local TweenService = game:GetService("TweenService")
 
-UIS.InputBegan:Connect(function(input, gp)
-	if input.KeyCode == Enum.KeyCode.LeftControl and not gp then
-		isOpen = not isOpen
-		local gui = game.CoreGui:FindFirstChild("ScreenGui")
-		if gui then
-			gui.Enabled = isOpen
-		end
-	end
-end)
+    ScreenGui.Parent = game.CoreGui
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    ScreenGui.Name = "NalahGalaxyUI"
 
--- Crée l'interface
-local UI = Orion:CreateOrion("🌌 Nalah HUB - Arise Crossover")
+    Main.Name = "Main"
+    Main.Parent = ScreenGui
+    Main.BackgroundColor3 = Color3.fromRGB(10, 10, 20)
+    Main.Position = UDim2.new(0.2, 0, 0.2, 0)
+    Main.Size = UDim2.new(0, 600, 0, 400)
 
--- Onglet Accueil
-local Home = UI:CreateSection("🏠 Accueil")
-Home:TextLabel("🌌 Bienvenue sur Nalah HUB")
-Home:TextLabel("👑 Créé par : Nalah")
-Home:TextLabel("🧪 Version : v1.0.0")
-Home:TextLabel("✨ Merci d’utiliser notre hub !")
+    UICorner.CornerRadius = UDim.new(0, 12)
+    UICorner.Parent = Main
 
--- Fonction TP améliorée
-local function teleportForce(cframe)
-	local char = game.Players.LocalPlayer.Character
-	if not char then return end
+    LeftMenu.Name = "LeftMenu"
+    LeftMenu.Parent = Main
+    LeftMenu.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
+    LeftMenu.Size = UDim2.new(0, 140, 1, 0)
 
-	local hrp = char:FindFirstChild("HumanoidRootPart")
-	local hum = char:FindFirstChildOfClass("Humanoid")
+    UIListLayout.Parent = LeftMenu
+    UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    UIListLayout.Padding = UDim.new(0, 10)
 
-	if hrp and hum then
-		hum:ChangeState(11)
-		hrp.Anchored = true
-		hrp.CFrame = cframe
-		task.wait(0.4)
-		hrp.Anchored = false
-	end
+    TabPages.Name = "TabPages"
+    TabPages.Parent = Main
+
+    -- Animation
+    TweenService:Create(Main, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0, 620, 0, 420)
+    }):Play()
+
+    -- Toggle Ctrl gauche
+    local isOpen = true
+    UserInputService.InputBegan:Connect(function(input, gpe)
+        if input.KeyCode == Enum.KeyCode.LeftControl and not gpe then
+            isOpen = not isOpen
+            Main.Visible = isOpen
+        end
+    end)
+
+    local function CreateTab(name)
+        local Button = Instance.new("TextButton")
+        Button.Name = name .. "Tab"
+        Button.Parent = LeftMenu
+        Button.BackgroundColor3 = Color3.fromRGB(30, 30, 60)
+        Button.Size = UDim2.new(1, -10, 0, 40)
+        Button.Font = Enum.Font.GothamBold
+        Button.Text = name
+        Button.TextColor3 = Color3.fromRGB(170, 130, 255)
+        Button.TextSize = 14
+
+        local Tab = Instance.new("ScrollingFrame")
+        Tab.Name = name .. "Page"
+        Tab.Parent = TabPages
+        Tab.Size = UDim2.new(1, -150, 1, -20)
+        Tab.Position = UDim2.new(0, 150, 0, 10)
+        Tab.BackgroundTransparency = 1
+        Tab.Visible = false
+        Tab.ScrollBarThickness = 5
+        Tab.CanvasSize = UDim2.new(0, 0, 5, 0)
+
+        local List = Instance.new("UIListLayout")
+        List.Parent = Tab
+        List.Padding = UDim.new(0, 10)
+        List.HorizontalAlignment = Enum.HorizontalAlignment.Center
+        List.SortOrder = Enum.SortOrder.LayoutOrder
+
+        Button.MouseButton1Click:Connect(function()
+            for _, child in pairs(TabPages:GetChildren()) do
+                if child:IsA("ScrollingFrame") then
+                    child.Visible = false
+                end
+            end
+            Tab.Visible = true
+        end)
+
+        local elementHandler = {}
+
+        function elementHandler:TextLabel(text)
+            local lbl = Instance.new("TextLabel")
+            lbl.Size = UDim2.new(0, 400, 0, 30)
+            lbl.BackgroundTransparency = 1
+            lbl.Text = text
+            lbl.TextColor3 = Color3.fromRGB(200, 200, 255)
+            lbl.Font = Enum.Font.GothamSemibold
+            lbl.TextSize = 16
+            lbl.Parent = Tab
+        end
+
+        function elementHandler:TextButton(label, tooltip, callback)
+            local btn = Instance.new("TextButton")
+            btn.Size = UDim2.new(0, 400, 0, 40)
+            btn.BackgroundColor3 = Color3.fromRGB(45, 45, 70)
+            btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+            btn.Font = Enum.Font.GothamBold
+            btn.TextSize = 14
+            btn.Text = label
+            btn.Parent = Tab
+            btn.MouseButton1Click:Connect(callback)
+        end
+
+        function elementHandler:Toggle(label, callback)
+            local toggle = Instance.new("TextButton")
+            toggle.Size = UDim2.new(0, 400, 0, 40)
+            toggle.BackgroundColor3 = Color3.fromRGB(45, 45, 70)
+            toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+            toggle.Font = Enum.Font.GothamBold
+            toggle.TextSize = 14
+            toggle.Text = label .. ": OFF"
+            toggle.Parent = Tab
+
+            local state = false
+            toggle.MouseButton1Click:Connect(function()
+                state = not state
+                toggle.Text = label .. (state and ": ON" or ": OFF")
+                callback(state)
+            end)
+        end
+
+        function elementHandler:Slider(label, min, max, callback)
+            local val = min
+            local btn = Instance.new("TextButton")
+            btn.Size = UDim2.new(0, 400, 0, 40)
+            btn.BackgroundColor3 = Color3.fromRGB(45, 45, 70)
+            btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+            btn.Font = Enum.Font.GothamBold
+            btn.TextSize = 14
+            btn.Text = label .. ": " .. val
+            btn.Parent = Tab
+            btn.MouseButton1Click:Connect(function()
+                val = val + 1
+                if val > max then val = min end
+                btn.Text = label .. ": " .. val
+                callback(val)
+            end)
+        end
+
+        function elementHandler:Dropdown(label, options, callback)
+            local btn = Instance.new("TextButton")
+            btn.Size = UDim2.new(0, 400, 0, 40)
+            btn.BackgroundColor3 = Color3.fromRGB(45, 45, 70)
+            btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+            btn.Font = Enum.Font.GothamBold
+            btn.TextSize = 14
+            btn.Text = label .. "..."
+            btn.Parent = Tab
+            local index = 1
+            btn.MouseButton1Click:Connect(function()
+                index = index + 1
+                if index > #options then index = 1 end
+                btn.Text = label .. ": " .. options[index]
+                callback(options[index])
+            end)
+        end
+
+        return elementHandler
+    end
+
+    return {
+        CreateSection = CreateTab
+    }
 end
 
--- Onglet Farm
-local Farm = UI:CreateSection("🌾 Farm")
-
--- Auto Farm Mobs
-local autoFarm = false
-Farm:Toggle("Auto Farm Mobs", function(bool)
-	autoFarm = bool
-	while autoFarm do
-		print("[AUTO FARM] Farming...")
-		task.wait(1)
-	end
-end)
-
--- Type de farm
-local farmType = "Closest"
-Farm:Dropdown("Type de Farm", {"Closest", "Furthest", "Lowest HP", "Highest HP"}, function(v)
-	farmType = v
-	print("Farm Type:", v)
-end)
-
--- Delay entre mobs
-local delayFarm = 1
-Farm:Slider("⏱️ Delay to next mob", 0, 5, function(val)
-	delayFarm = val
-end)
-
--- Auto Farm Selected Mobs
-local autoFarmSelected = false
-Farm:Toggle("Auto Farm Mobs Sélectionnés", function(bool)
-	autoFarmSelected = bool
-	while autoFarmSelected do
-		print("[AUTO SELECTED] Farm mobs ciblés...")
-		task.wait(delayFarm)
-	end
-end)
-
--- Liste de mobs sélectionnables
-Farm:Dropdown("Cibler un Mob", {"Mob1", "Mob2", "Boss1"}, function(mob)
-	print("[TARGET MOB] " .. mob)
-end)
-
--- Auto Attack
-local autoAttack = false
-Farm:Toggle("Auto Attack", function(bool)
-	autoAttack = bool
-	while autoAttack do
-		print("[HIT] Attack!")
-		task.wait(0.3)
-	end
-end)
-
--- Auto Send Shadow
-local autoShadow = false
-Farm:Toggle("Auto Send Shadow", function(bool)
-	autoShadow = bool
-	while autoShadow do
-		print("[SHADOW] Envoi")
-		task.wait(0.5)
-	end
-end)
-
-Farm:Toggle("Auto Arise", function(b)
-	print("[ARISE] Pas encore configuré.")
-end)
-
-Farm:Toggle("Auto Clicker", function(b)
-	print("[CLICK] Pas encore configuré.")
-end)
-
--- Onglet Téléportation
-local TP = UI:CreateSection("🌍 Téléportations")
-
-TP:TextButton("🥇 Ville de Nivellement", "", function()
-	teleportForce(CFrame.new(578, 25.9, 261.5))
-end)
-
-TP:TextButton("🥈 Village d'herbe", "", function()
-	teleportForce(CFrame.new(-3380.2, 27.8, 2257.3))
-end)
-
-TP:TextButton("🥉 Île de Brum", "", function()
-	teleportForce(CFrame.new(-2851.1, 46.9, -2011.4))
-end)
-
-TP:TextButton("🧼 Ville de guérison faciale", "", function()
-	teleportForce(CFrame.new(2641.8, 42.9, -2645.1))
-end)
-
-TP:TextButton("🍀 Lucky Kingdom", "", function()
-	teleportForce(CFrame.new(198.3, 36.2, 4296.1))
-end)
-
-TP:TextButton("🗾 Nipon City", "", function()
-	teleportForce(CFrame.new(214.7, 30.4, -4301.6))
-end)
-
-TP:TextButton("🌃 Mori Town", "", function()
-	teleportForce(CFrame.new(4885.21, 41.03, -160.83))
-end)
-
-TP:TextButton("🐉 Dragon City", "", function()
-	teleportForce(CFrame.new(-6295.89, 27.2, -73.71))
-end)
-
-TP:TextButton("🏙️ XZ City", "", function()
-	teleportForce(CFrame.new(5633.9043, 25.39, 4555.0498))
-end)
+return Orion
