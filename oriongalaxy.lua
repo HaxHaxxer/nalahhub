@@ -1,135 +1,153 @@
--- Orion UI - Galaxie Edition
--- Style personnalisé : Onglets verticaux à gauche + animation + toggle avec Ctrl gauche
--- Créateur : ChatGPT pour Nalah ✨
+repeat wait() until game:IsLoaded()
 
-local Orion = {}
+-- Load custom UI (ton fichier oriongalaxy.lua)
+local Orion = loadstring(game:HttpGet("https://raw.githubusercontent.com/HaxHaxxer/nalahhub/main/oriongalaxy.lua"))()
 
-function Orion:CreateOrion(hubName)
-    hubName = hubName or "Nalah HUB"
+-- Toggle UI with Ctrl gauche (KeyCode 17)
+local UIS = game:GetService("UserInputService")
+local isOpen = true
 
-    local UIS = game:GetService("UserInputService")
-    local TweenService = game:GetService("TweenService")
-    local isOpen = true
+UIS.InputBegan:Connect(function(input, gp)
+	if input.KeyCode == Enum.KeyCode.LeftControl and not gp then
+		isOpen = not isOpen
+		local gui = game.CoreGui:FindFirstChild("ScreenGui")
+		if gui then
+			gui.Enabled = isOpen
+		end
+	end
+end)
 
-    local gui = Instance.new("ScreenGui", game.CoreGui)
-    gui.Name = "OrionGalaxyUI"
-    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+-- Crée l'interface
+local UI = Orion:CreateOrion("🌌 Nalah HUB - Arise Crossover")
 
-    local main = Instance.new("Frame", gui)
-    main.Size = UDim2.new(0, 600, 0, 400)
-    main.Position = UDim2.new(0.3, 0, 0.2, 0)
-    main.BackgroundColor3 = Color3.fromRGB(25, 0, 40)
-    main.BorderSizePixel = 0
-    main.BackgroundTransparency = 0
-    main.Active = true
-    main.Draggable = true
+-- Onglet Accueil
+local Home = UI:CreateSection("🏠 Accueil")
+Home:TextLabel("🌌 Bienvenue sur Nalah HUB")
+Home:TextLabel("👑 Créé par : Nalah")
+Home:TextLabel("🧪 Version : v1.0.0")
+Home:TextLabel("✨ Merci d’utiliser notre hub !")
 
-    local mainCorner = Instance.new("UICorner", main)
-    mainCorner.CornerRadius = UDim.new(0, 16)
+-- Fonction TP améliorée
+local function teleportForce(cframe)
+	local char = game.Players.LocalPlayer.Character
+	if not char then return end
 
-    local tabContainer = Instance.new("Frame", main)
-    tabContainer.Size = UDim2.new(0, 120, 1, 0)
-    tabContainer.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
-    tabContainer.BorderSizePixel = 0
+	local hrp = char:FindFirstChild("HumanoidRootPart")
+	local hum = char:FindFirstChildOfClass("Humanoid")
 
-    local tabLayout = Instance.new("UIListLayout", tabContainer)
-    tabLayout.FillDirection = Enum.FillDirection.Vertical
-    tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    tabLayout.Padding = UDim.new(0, 5)
-
-    local contentContainer = Instance.new("Frame", main)
-    contentContainer.Size = UDim2.new(1, -130, 1, -20)
-    contentContainer.Position = UDim2.new(0, 130, 0, 10)
-    contentContainer.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
-    contentContainer.BorderSizePixel = 0
-
-    local contentCorner = Instance.new("UICorner", contentContainer)
-    contentCorner.CornerRadius = UDim.new(0, 12)
-
-    local folderPages = Instance.new("Folder", contentContainer)
-    folderPages.Name = "Pages"
-
-    -- Toggle avec Ctrl gauche
-    UIS.InputBegan:Connect(function(input, gp)
-        if input.KeyCode == Enum.KeyCode.LeftControl and not gp then
-            isOpen = not isOpen
-            gui.Enabled = isOpen
-        end
-    end)
-
-    local OrionFunctions = {}
-
-    function OrionFunctions:CreateSection(name)
-        local page = Instance.new("ScrollingFrame", folderPages)
-        page.Size = UDim2.new(1, 0, 1, 0)
-        page.CanvasSize = UDim2.new(0, 0, 0, 0)
-        page.ScrollBarThickness = 6
-        page.Visible = false
-        page.BackgroundTransparency = 1
-
-        local list = Instance.new("UIListLayout", page)
-        list.SortOrder = Enum.SortOrder.LayoutOrder
-        list.Padding = UDim.new(0, 8)
-
-        local tabBtn = Instance.new("TextButton", tabContainer)
-        tabBtn.Size = UDim2.new(1, 0, 0, 40)
-        tabBtn.BackgroundColor3 = Color3.fromRGB(35, 0, 55)
-        tabBtn.Text = name
-        tabBtn.Font = Enum.Font.GothamBold
-        tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        tabBtn.TextSize = 14
-
-        local btnCorner = Instance.new("UICorner", tabBtn)
-        btnCorner.CornerRadius = UDim.new(0, 6)
-
-        tabBtn.MouseEnter:Connect(function()
-            TweenService:Create(tabBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(70, 0, 100)}):Play()
-        end)
-        tabBtn.MouseLeave:Connect(function()
-            TweenService:Create(tabBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(35, 0, 55)}):Play()
-        end)
-
-        tabBtn.MouseButton1Click:Connect(function()
-            for _, pageChild in pairs(folderPages:GetChildren()) do
-                if pageChild:IsA("ScrollingFrame") then
-                    pageChild.Visible = false
-                end
-            end
-            page.Visible = true
-        end)
-
-        local SectionFuncs = {}
-
-        function SectionFuncs:TextLabel(text)
-            local label = Instance.new("TextLabel", page)
-            label.Size = UDim2.new(1, -20, 0, 30)
-            label.BackgroundColor3 = Color3.fromRGB(45, 0, 60)
-            label.Text = text
-            label.Font = Enum.Font.GothamSemibold
-            label.TextSize = 14
-            label.TextColor3 = Color3.fromRGB(255, 255, 255)
-            label.TextXAlignment = Enum.TextXAlignment.Left
-            local corner = Instance.new("UICorner", label)
-            corner.CornerRadius = UDim.new(0, 6)
-        end
-
-        function SectionFuncs:TextButton(text, desc, callback)
-            local button = Instance.new("TextButton", page)
-            button.Size = UDim2.new(1, -20, 0, 30)
-            button.BackgroundColor3 = Color3.fromRGB(80, 0, 120)
-            button.Text = text
-            button.Font = Enum.Font.GothamBold
-            button.TextSize = 14
-            button.TextColor3 = Color3.fromRGB(255, 255, 255)
-            local corner = Instance.new("UICorner", button)
-            corner.CornerRadius = UDim.new(0, 6)
-            button.MouseButton1Click:Connect(callback)
-        end
-
-        return SectionFuncs
-    end
-
-    return OrionFunctions
+	if hrp and hum then
+		hum:ChangeState(11)
+		hrp.Anchored = true
+		hrp.CFrame = cframe
+		task.wait(0.4)
+		hrp.Anchored = false
+	end
 end
 
-return Orion
+-- Onglet Farm
+local Farm = UI:CreateSection("🌾 Farm")
+
+-- Auto Farm Mobs
+local autoFarm = false
+Farm:Toggle("Auto Farm Mobs", function(bool)
+	autoFarm = bool
+	while autoFarm do
+		print("[AUTO FARM] Farming...")
+		task.wait(1)
+	end
+end)
+
+-- Type de farm
+local farmType = "Closest"
+Farm:Dropdown("Type de Farm", {"Closest", "Furthest", "Lowest HP", "Highest HP"}, function(v)
+	farmType = v
+	print("Farm Type:", v)
+end)
+
+-- Delay entre mobs
+local delayFarm = 1
+Farm:Slider("⏱️ Delay to next mob", 0, 5, function(val)
+	delayFarm = val
+end)
+
+-- Auto Farm Selected Mobs
+local autoFarmSelected = false
+Farm:Toggle("Auto Farm Mobs Sélectionnés", function(bool)
+	autoFarmSelected = bool
+	while autoFarmSelected do
+		print("[AUTO SELECTED] Farm mobs ciblés...")
+		task.wait(delayFarm)
+	end
+end)
+
+-- Liste de mobs sélectionnables
+Farm:Dropdown("Cibler un Mob", {"Mob1", "Mob2", "Boss1"}, function(mob)
+	print("[TARGET MOB] " .. mob)
+end)
+
+-- Auto Attack
+local autoAttack = false
+Farm:Toggle("Auto Attack", function(bool)
+	autoAttack = bool
+	while autoAttack do
+		print("[HIT] Attack!")
+		task.wait(0.3)
+	end
+end)
+
+-- Auto Send Shadow
+local autoShadow = false
+Farm:Toggle("Auto Send Shadow", function(bool)
+	autoShadow = bool
+	while autoShadow do
+		print("[SHADOW] Envoi")
+		task.wait(0.5)
+	end
+end)
+
+Farm:Toggle("Auto Arise", function(b)
+	print("[ARISE] Pas encore configuré.")
+end)
+
+Farm:Toggle("Auto Clicker", function(b)
+	print("[CLICK] Pas encore configuré.")
+end)
+
+-- Onglet Téléportation
+local TP = UI:CreateSection("🌍 Téléportations")
+
+TP:TextButton("🥇 Ville de Nivellement", "", function()
+	teleportForce(CFrame.new(578, 25.9, 261.5))
+end)
+
+TP:TextButton("🥈 Village d'herbe", "", function()
+	teleportForce(CFrame.new(-3380.2, 27.8, 2257.3))
+end)
+
+TP:TextButton("🥉 Île de Brum", "", function()
+	teleportForce(CFrame.new(-2851.1, 46.9, -2011.4))
+end)
+
+TP:TextButton("🧼 Ville de guérison faciale", "", function()
+	teleportForce(CFrame.new(2641.8, 42.9, -2645.1))
+end)
+
+TP:TextButton("🍀 Lucky Kingdom", "", function()
+	teleportForce(CFrame.new(198.3, 36.2, 4296.1))
+end)
+
+TP:TextButton("🗾 Nipon City", "", function()
+	teleportForce(CFrame.new(214.7, 30.4, -4301.6))
+end)
+
+TP:TextButton("🌃 Mori Town", "", function()
+	teleportForce(CFrame.new(4885.21, 41.03, -160.83))
+end)
+
+TP:TextButton("🐉 Dragon City", "", function()
+	teleportForce(CFrame.new(-6295.89, 27.2, -73.71))
+end)
+
+TP:TextButton("🏙️ XZ City", "", function()
+	teleportForce(CFrame.new(5633.9043, 25.39, 4555.0498))
+end)
