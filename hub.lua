@@ -21,11 +21,12 @@ end)
 local UI = Orion:CreateOrion("🌌 Nalah HUB - Arise Crossover")
 
 -- Onglet Accueil
-local Home = UI:CreateSection("🏠 Accueil")
-Home:TextLabel("🌌 Bienvenue sur Nalah HUB")
-Home:TextLabel("👑 Créé par : Nalah")
-Home:TextLabel("🧪 Version : v1.0.0")
-Home:TextLabel("✨ Merci d’utiliser notre hub !")
+local HomeTab = UI:CreateTab("Accueil", "", true)
+local Home = HomeTab:CreateSection("Accueil")
+Home:CreateLabel("\ud83c\udf0c Bienvenue sur Nalah HUB")
+Home:CreateLabel("\ud83d\udc51 Créé par : Nalah")
+Home:CreateLabel("\ud83e\uddea Version : v1.0.0")
+Home:CreateLabel("\u2728 Merci d’utiliser notre hub !")
 
 -- Fonction TP améliorée
 local function teleportForce(cframe)
@@ -45,109 +46,119 @@ local function teleportForce(cframe)
 end
 
 -- Onglet Farm
-local Farm = UI:CreateSection("🌾 Farm")
+local FarmTab = UI:CreateTab("Auto Farm", "")
+local Farm = FarmTab:CreateSection("\ud83c\udf3e Farm")
 
 -- Auto Farm Mobs
 local autoFarm = false
-Farm:Toggle("Auto Farm Mobs", function(bool)
+Farm:CreateToggle("Auto Farm Mobs", false, function(bool)
 	autoFarm = bool
-	while autoFarm do
-		print("[AUTO FARM] Farming...")
-		task.wait(1)
-	end
+	task.spawn(function()
+		while autoFarm do
+			print("[AUTO FARM] Farming...")
+			task.wait(1)
+		end
+	end)
 end)
 
 -- Type de farm
 local farmType = "Closest"
-Farm:Dropdown("Type de Farm", {"Closest", "Furthest", "Lowest HP", "Highest HP"}, function(v)
+Farm:CreateDropdown("Type de Farm", {"Closest", "Furthest", "Lowest HP", "Highest HP"}, function(v)
 	farmType = v
 	print("Farm Type:", v)
 end)
 
 -- Delay entre mobs
 local delayFarm = 1
-Farm:Slider("⏱️ Delay to next mob", 0, 5, function(val)
+Farm:CreateSlider("\u23f1\ufe0f Delay to next mob", 0, 5, 1, function(val)
 	delayFarm = val
 end)
 
 -- Auto Farm Selected Mobs
 local autoFarmSelected = false
-Farm:Toggle("Auto Farm Mobs Sélectionnés", function(bool)
+Farm:CreateToggle("Auto Farm Mobs Sélectionnés", false, function(bool)
 	autoFarmSelected = bool
-	while autoFarmSelected do
-		print("[AUTO SELECTED] Farm mobs ciblés...")
-		task.wait(delayFarm)
-	end
+	task.spawn(function()
+		while autoFarmSelected do
+			print("[AUTO SELECTED] Farm mobs ciblés...")
+			task.wait(delayFarm)
+		end
+	end)
 end)
 
 -- Liste de mobs sélectionnables
-Farm:Dropdown("Cibler un Mob", {"Mob1", "Mob2", "Boss1"}, function(mob)
+Farm:CreateDropdown("Cibler un Mob", {"Mob1", "Mob2", "Boss1"}, function(mob)
 	print("[TARGET MOB] " .. mob)
 end)
 
 -- Auto Attack
 local autoAttack = false
-Farm:Toggle("Auto Attack", function(bool)
+Farm:CreateToggle("Auto Attack", false, function(bool)
 	autoAttack = bool
-	while autoAttack do
-		print("[HIT] Attack!")
-		task.wait(0.3)
-	end
+	task.spawn(function()
+		while autoAttack do
+			print("[HIT] Attack!")
+			task.wait(0.3)
+		end
+	end)
 end)
 
 -- Auto Send Shadow
 local autoShadow = false
-Farm:Toggle("Auto Send Shadow", function(bool)
+Farm:CreateToggle("Auto Send Shadow", false, function(bool)
 	autoShadow = bool
-	while autoShadow do
-		print("[SHADOW] Envoi")
-		task.wait(0.5)
-	end
+	task.spawn(function()
+		while autoShadow do
+			print("[SHADOW] Envoi")
+			task.wait(0.5)
+		end
+	end)
 end)
 
-Farm:Toggle("Auto Arise", function(b)
+Farm:CreateToggle("Auto Arise", false, function()
 	print("[ARISE] Pas encore configuré.")
 end)
 
-Farm:Toggle("Auto Clicker", function(b)
+Farm:CreateToggle("Auto Clicker", false, function()
 	print("[CLICK] Pas encore configuré.")
 end)
 
 -- Onglet Téléportation
-local TP = UI:CreateSection("🌍 Téléportations")
+local TPTab = UI:CreateTab("Téléportations", "")
+local TP = TPTab:CreateSection("\ud83c\udf0d Toutes les îles")
 
-TP:TextButton("🥇 Ville de Nivellement", "", function()
+TP:CreateButton("\ud83e\udd47 Ville de Nivellement", function()
 	teleportForce(CFrame.new(578, 25.9, 261.5))
 end)
 
-TP:TextButton("🥈 Village d'herbe", "", function()
+TP:CreateButton("\ud83e\udd48 Village d'herbe", function()
 	teleportForce(CFrame.new(-3380.2, 27.8, 2257.3))
 end)
 
-TP:TextButton("🥉 Île de Brum", "", function()
+TP:CreateButton("\ud83e\udd49 Île de Brum", function()
 	teleportForce(CFrame.new(-2851.1, 46.9, -2011.4))
 end)
 
-TP:TextButton("🧼 Ville de guérison faciale", "", function()
+TP:CreateButton("\ud83e\uddfc Ville de guérison faciale", function()
 	teleportForce(CFrame.new(2641.8, 42.9, -2645.1))
 end)
 
-TP:TextButton("🍀 Lucky Kingdom", "", function()
+TP:CreateButton("\ud83c\udf40 Lucky Kingdom", function()
 	teleportForce(CFrame.new(198.3, 36.2, 4296.1))
 end)
 
-TP:TextButton("🗾 Nipon City", "", function()
+TP:CreateButton("\ud83d\uddfe Nipon City", function()
 	teleportForce(CFrame.new(214.7, 30.4, -4301.6))
 end)
 
-TP:TextButton("🌃 Mori Town", "", function()
+TP:CreateButton("\ud83c\udf03 Mori Town", function()
 	teleportForce(CFrame.new(4885.21, 41.03, -160.83))
 end)
 
-TP:TextButton("🐉 Dragon City", "", function()
+TP:CreateButton("\ud83d\udc09 Dragon City", function()
 	teleportForce(CFrame.new(-6295.89, 27.2, -73.71))
 end)
 
-TP:TextButton("🏙️ XZ City", "", function()
+TP:CreateButton("\ud83c\udfd9\ufe0f XZ City", function()
 	teleportForce(CFrame.new(5633.9043, 25.39, 4555.0498))
 end)
