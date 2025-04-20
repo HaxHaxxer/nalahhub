@@ -60,7 +60,7 @@ function Orion:CreateOrion(hubTitle)
         Button.BackgroundColor3 = Color3.fromRGB(30, 30, 60)
         Button.Size = UDim2.new(1, -10, 0, 40)
         Button.Font = Enum.Font.GothamBold
-        Button.Text = name
+        Button.Text = tostring(name)
         Button.TextColor3 = Color3.fromRGB(170, 130, 255)
         Button.TextSize = 14
 
@@ -157,7 +157,7 @@ function Orion:CreateOrion(hubTitle)
             btn.TextColor3 = Color3.fromRGB(255, 255, 255)
             btn.Font = Enum.Font.GothamBold
             btn.TextSize = 14
-            btn.Text = label .. "..."
+            btn.Text = label .. "... "
             btn.Parent = Tab
             local index = 1
             btn.MouseButton1Click:Connect(function()
