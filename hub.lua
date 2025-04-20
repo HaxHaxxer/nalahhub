@@ -46,7 +46,7 @@ TPSection:TextButton("🗾 Nipon City (ChainsawWorld)", "", function()
 end)
 
 TPSection:TextButton("🌃 Mori Town (JojoWorld)", "", function()
-	teleportForce(CFrame.new(-4816.3, -27.4, -120.2))
+	teleportForce(CFrame.new(4885.21, 41.03, -160.83))
 end)
 
 TPSection:TextButton("🐉 Dragon City (DBWorld)", "", function()
@@ -54,5 +54,5 @@ TPSection:TextButton("🐉 Dragon City (DBWorld)", "", function()
 end)
 
 TPSection:TextButton("🏙️ XZ City (OPMWorld)", "", function()
-	teleportForce(CFrame.new(5633.9, 22.9, -4555.0))
+	teleportForce(CFrame.new(-6295.89, 27.2, -73.71))
 end)
