@@ -1,6 +1,6 @@
-local Orion = loadstring(game:HttpGet("https://raw.githubusercontent.com/HaxHaxxer/nalahhub/main/Orion.lua"))()
+local Orion = loadstring(game:HttpGet("https://raw.githubusercontent.com/HaxHaxxer/nalahhub/main/oriongalaxy.lua"))()
 
--- Ouvrir / Fermer avec Ctrl gauche (KeyCode 17)
+-- Toggle avec Ctrl gauche (KeyCode 17)
 local UIS = game:GetService("UserInputService")
 local isOpen = true
 UIS.InputBegan:Connect(function(input, gp)
@@ -10,16 +10,19 @@ UIS.InputBegan:Connect(function(input, gp)
 	end
 end)
 
+-- Crée la fenêtre principale
 local UI = Orion:CreateOrion("🌌 Nalah HUB - Arise Crossover")
 
--- 🌠 Onglet Accueil
+-- Accueil
 local Home = UI:CreateSection("🏠 Accueil")
 Home:TextLabel("🌌 Bienvenue sur Nalah HUB")
-Home:TextLabel("🧑‍💻 Créé par : Nalah")
+Home:TextLabel("👑 Créé par : Nalah")
 Home:TextLabel("🧪 Version : v1.0.0")
-Home:TextLabel("💫 Merci d’utiliser notre hub !")
+Home:TextLabel("✨ Merci d’utiliser notre hub !")
 
--- Fonction TP renforcée
+-- Téléportation
+local TP = UI:CreateSection("🌍 Téléportation")
+
 local function teleportForce(cframe)
 	local char = game.Players.LocalPlayer.Character
 	if not char then return end
@@ -35,7 +38,6 @@ local function teleportForce(cframe)
 		hrp.Anchored = false
 	end
 end
-
 -- 🌍 Onglet Téléportation
 local TPSection = UI:CreateSection("🌍 Toutes les îles")
 
