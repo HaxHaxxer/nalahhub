@@ -41,6 +41,83 @@ local function teleportForce(cframe)
 	end
 end
 
+-- Onglet Farm
+local Farm = UI:CreateSection("🌾 Farm")
+
+-- Auto Farm Mobs
+local autoFarm = false
+Farm:Toggle("Auto Farm Mobs", function(bool)
+    autoFarm = bool
+    while autoFarm do
+        -- log pour test, remplace par ta logique de farm
+        print("[AUTO FARM] Farming...")
+        task.wait(delayFarm)
+    end
+end)
+
+-- Choix type de farm
+local farmType = "Closest"
+Farm:Dropdown("Select Farm Type", {"Closest", "Furthest", "Lowest HP", "Highest HP"}, function(selected)
+    farmType = selected
+    print("[FARM TYPE] Choisi:", farmType)
+end)
+
+-- Delay farm
+local delayFarm = 3
+Farm:Slider("Delay To Next Mob", 0, 10, function(value)
+    delayFarm = value
+end)
+
+-- Auto Farm Selected Mobs
+local autoFarmSelected = false
+Farm:Toggle("Auto Farm Selected Mobs", function(bool)
+    autoFarmSelected = bool
+    while autoFarmSelected do
+        print("[FARM SELECTED] Farming selected mobs...")
+        task.wait(delayFarm)
+    end
+end)
+
+-- Liste des mobs
+Farm:Dropdown("Select Mobs to Farm", {"Mob1", "Mob2", "Boss1"}, function(mob)
+    print("[TARGET MOB] ", mob)
+    -- stocke le mob pour le farm ciblé
+end)
+
+-- Auto Attack
+local autoAttack = false
+Farm:Toggle("Auto Attack", function(bool)
+    autoAttack = bool
+    while autoAttack do
+        print("[AUTO ATTACK] Hit")
+        task.wait(0.3)
+    end
+end)
+
+-- Auto Send Shadow
+local autoShadow = false
+Farm:Toggle("Auto Send Shadow", function(bool)
+    autoShadow = bool
+    while autoShadow do
+        print("[SHADOW] Sent")
+        task.wait(0.5)
+    end
+end)
+
+-- Placeholder boutons
+Farm:Toggle("Auto Destroy", function(bool)
+    print("[DESTROY] Non configuré encore")
+end)
+
+Farm:Toggle("Auto Arise", function(bool)
+    print("[ARISE] Non configuré encore")
+end)
+
+Farm:Toggle("Auto Clicker", function(bool)
+    print("[CLICKER] Non configuré encore")
+end)
+
+
 -- Onglet TP
 local TP = UI:CreateSection("🌍 Toutes les îles")
 
