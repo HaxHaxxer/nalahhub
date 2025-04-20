@@ -1,4 +1,4 @@
-local Orion = loadstring(game:HttpGet("https://raw.githubusercontent.com/HaxHaxxer/nalahhub/main/oriongalaxy.lua"))()
+local Orion = loadstring(game:HttpGet("https://raw.githubusercontent.com/HaxHaxxer/nalahhub/main/Orion.lua"))()
 
 -- Toggle avec Ctrl gauche (KeyCode 17)
 local UIS = game:GetService("UserInputService")
