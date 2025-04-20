@@ -1,9 +1,25 @@
 local Orion = loadstring(game:HttpGet("https://raw.githubusercontent.com/HaxHaxxer/nalahhub/main/Orion.lua"))()
+
+-- Ouvrir / Fermer avec Ctrl gauche (KeyCode 17)
+local UIS = game:GetService("UserInputService")
+local isOpen = true
+UIS.InputBegan:Connect(function(input, gp)
+	if input.KeyCode == Enum.KeyCode.LeftControl and not gp then
+		isOpen = not isOpen
+		game.CoreGui:FindFirstChild("ScreenGui").Enabled = isOpen
+	end
+end)
+
 local UI = Orion:CreateOrion("🌌 Nalah HUB - Arise Crossover")
 
-local TPSection = UI:CreateSection("🌍 Toutes les îles")
+-- 🌠 Onglet Accueil
+local Home = UI:CreateSection("🏠 Accueil")
+Home:TextLabel("🌌 Bienvenue sur Nalah HUB")
+Home:TextLabel("🧑‍💻 Créé par : Nalah")
+Home:TextLabel("🧪 Version : v1.0.0")
+Home:TextLabel("💫 Merci d’utiliser notre hub !")
 
--- Fonction de téléportation renforcée
+-- Fonction TP renforcée
 local function teleportForce(cframe)
 	local char = game.Players.LocalPlayer.Character
 	if not char then return end
@@ -12,7 +28,7 @@ local function teleportForce(cframe)
 	local hum = char:FindFirstChildOfClass("Humanoid")
 
 	if hrp and hum then
-		hum:ChangeState(11) -- évite les rollback sur certains serveurs
+		hum:ChangeState(11)
 		hrp.Anchored = true
 		hrp.CFrame = cframe
 		task.wait(0.4)
@@ -20,7 +36,9 @@ local function teleportForce(cframe)
 	end
 end
 
--- Boutons de téléportation
+-- 🌍 Onglet Téléportation
+local TPSection = UI:CreateSection("🌍 Toutes les îles")
+
 TPSection:TextButton("🥇 Ville de Nivellement", "", function()
 	teleportForce(CFrame.new(578, 25.9, 261.5))
 end)
@@ -50,9 +68,9 @@ TPSection:TextButton("🌃 Mori Town", "", function()
 end)
 
 TPSection:TextButton("🐉 Dragon City", "", function()
-	teleportForce(CFrame.new(-6295.9, 24.7, -73.7))
+	teleportForce(CFrame.new(-6295.89, 27.2, -73.71))
 end)
 
 TPSection:TextButton("🏙️ XZ City", "", function()
-	teleportForce(CFrame.new(-6295.89, 27.2, -73.71))
+	teleportForce(CFrame.new(5633.9043, 25.39, 4555.0498))
 end)
