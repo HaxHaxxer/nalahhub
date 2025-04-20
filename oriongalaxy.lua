@@ -1,169 +1,135 @@
--- 🌌 Orion UI Rework - Thème Galaxie / Pro
-local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
+-- Orion UI - Galaxie Edition
+-- Style personnalisé : Onglets verticaux à gauche + animation + toggle avec Ctrl gauche
+-- Créateur : ChatGPT pour Nalah ✨
 
 local Orion = {}
 
-function Orion:CreateOrion(title)
-    title = title or "Nalah HUB"
+function Orion:CreateOrion(hubName)
+    hubName = hubName or "Nalah HUB"
+
+    local UIS = game:GetService("UserInputService")
+    local TweenService = game:GetService("TweenService")
     local isOpen = true
 
-    -- UI Parent
-    local gui = Instance.new("ScreenGui")
+    local gui = Instance.new("ScreenGui", game.CoreGui)
     gui.Name = "OrionGalaxyUI"
-    gui.ResetOnSpawn = false
-    gui.IgnoreGuiInset = true
     gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    gui.Parent = game.CoreGui
 
-    -- UI Container
-    local main = Instance.new("Frame")
-    main.Name = "MainFrame"
-    main.Size = UDim2.new(0, 600, 0, 350)
-    main.Position = UDim2.new(0.5, -300, 0.5, -175)
-    main.BackgroundColor3 = Color3.fromRGB(20, 18, 30)
+    local main = Instance.new("Frame", gui)
+    main.Size = UDim2.new(0, 600, 0, 400)
+    main.Position = UDim2.new(0.3, 0, 0.2, 0)
+    main.BackgroundColor3 = Color3.fromRGB(25, 0, 40)
     main.BorderSizePixel = 0
-    main.ClipsDescendants = true
-    main.Parent = gui
+    main.BackgroundTransparency = 0
+    main.Active = true
+    main.Draggable = true
 
-    -- Glow Border Effect
-    local glow = Instance.new("UIStroke")
-    glow.Color = Color3.fromRGB(134, 94, 255)
-    glow.Thickness = 2
-    glow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    glow.Transparency = 0.2
-    glow.Parent = main
+    local mainCorner = Instance.new("UICorner", main)
+    mainCorner.CornerRadius = UDim.new(0, 16)
 
-    -- Corner Radius
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 15)
-    corner.Parent = main
+    local tabContainer = Instance.new("Frame", main)
+    tabContainer.Size = UDim2.new(0, 120, 1, 0)
+    tabContainer.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
+    tabContainer.BorderSizePixel = 0
 
-    -- Title Bar
-    local header = Instance.new("Frame")
-    header.Size = UDim2.new(1, 0, 0, 40)
-    header.BackgroundColor3 = Color3.fromRGB(40, 20, 70)
-    header.BorderSizePixel = 0
-    header.Parent = main
+    local tabLayout = Instance.new("UIListLayout", tabContainer)
+    tabLayout.FillDirection = Enum.FillDirection.Vertical
+    tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    tabLayout.Padding = UDim.new(0, 5)
 
-    local headerCorner = Instance.new("UICorner")
-    headerCorner.CornerRadius = UDim.new(0, 15)
-    headerCorner.Parent = header
+    local contentContainer = Instance.new("Frame", main)
+    contentContainer.Size = UDim2.new(1, -130, 1, -20)
+    contentContainer.Position = UDim2.new(0, 130, 0, 10)
+    contentContainer.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+    contentContainer.BorderSizePixel = 0
 
-    local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, -20, 1, 0)
-    titleLabel.Position = UDim2.new(0, 10, 0, 0)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextSize = 18
-    titleLabel.Text = "🌌  " .. title
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-    titleLabel.Parent = header
+    local contentCorner = Instance.new("UICorner", contentContainer)
+    contentCorner.CornerRadius = UDim.new(0, 12)
 
-    -- Close Button
-    local close = Instance.new("TextButton")
-    close.Size = UDim2.new(0, 30, 0, 30)
-    close.Position = UDim2.new(1, -35, 0, 5)
-    close.BackgroundTransparency = 1
-    close.Text = "✖"
-    close.TextColor3 = Color3.fromRGB(255, 100, 100)
-    close.Font = Enum.Font.GothamBold
-    close.TextSize = 18
-    close.Parent = header
+    local folderPages = Instance.new("Folder", contentContainer)
+    folderPages.Name = "Pages"
 
-    close.MouseButton1Click:Connect(function()
-        isOpen = false
-        gui.Enabled = false
-    end)
-
-    -- Ctrl Left Toggle
-    UserInputService.InputBegan:Connect(function(input, gp)
+    -- Toggle avec Ctrl gauche
+    UIS.InputBegan:Connect(function(input, gp)
         if input.KeyCode == Enum.KeyCode.LeftControl and not gp then
             isOpen = not isOpen
             gui.Enabled = isOpen
         end
     end)
 
-    -- Content Area
-    local container = Instance.new("Frame")
-    container.Size = UDim2.new(1, -20, 1, -60)
-    container.Position = UDim2.new(0, 10, 0, 50)
-    container.BackgroundTransparency = 1
-    container.Name = "Container"
-    container.Parent = main
+    local OrionFunctions = {}
 
-    local layout = Instance.new("UIListLayout")
-    layout.SortOrder = Enum.SortOrder.LayoutOrder
-    layout.Padding = UDim.new(0, 8)
-    layout.Parent = container
+    function OrionFunctions:CreateSection(name)
+        local page = Instance.new("ScrollingFrame", folderPages)
+        page.Size = UDim2.new(1, 0, 1, 0)
+        page.CanvasSize = UDim2.new(0, 0, 0, 0)
+        page.ScrollBarThickness = 6
+        page.Visible = false
+        page.BackgroundTransparency = 1
 
-    local handler = {}
+        local list = Instance.new("UIListLayout", page)
+        list.SortOrder = Enum.SortOrder.LayoutOrder
+        list.Padding = UDim.new(0, 8)
 
-    function handler:CreateSection(name)
-        local section = Instance.new("Frame")
-        section.Size = UDim2.new(1, 0, 0, 40)
-        section.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
-        section.BorderSizePixel = 0
-        section.Parent = container
+        local tabBtn = Instance.new("TextButton", tabContainer)
+        tabBtn.Size = UDim2.new(1, 0, 0, 40)
+        tabBtn.BackgroundColor3 = Color3.fromRGB(35, 0, 55)
+        tabBtn.Text = name
+        tabBtn.Font = Enum.Font.GothamBold
+        tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        tabBtn.TextSize = 14
 
-        local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(0, 8)
-        corner.Parent = section
+        local btnCorner = Instance.new("UICorner", tabBtn)
+        btnCorner.CornerRadius = UDim.new(0, 6)
 
-        local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, -10, 1, 0)
-        label.Position = UDim2.new(0, 5, 0, 0)
-        label.BackgroundTransparency = 1
-        label.Text = name
-        label.TextColor3 = Color3.fromRGB(200, 180, 255)
-        label.Font = Enum.Font.GothamSemibold
-        label.TextSize = 16
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        label.Parent = section
+        tabBtn.MouseEnter:Connect(function()
+            TweenService:Create(tabBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(70, 0, 100)}):Play()
+        end)
+        tabBtn.MouseLeave:Connect(function()
+            TweenService:Create(tabBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(35, 0, 55)}):Play()
+        end)
 
-        local secHandler = {}
+        tabBtn.MouseButton1Click:Connect(function()
+            for _, pageChild in pairs(folderPages:GetChildren()) do
+                if pageChild:IsA("ScrollingFrame") then
+                    pageChild.Visible = false
+                end
+            end
+            page.Visible = true
+        end)
 
-        function secHandler:TextLabel(text)
-            local label = Instance.new("TextLabel")
-            label.Size = UDim2.new(1, -10, 0, 30)
-            label.BackgroundColor3 = Color3.fromRGB(35, 35, 55)
+        local SectionFuncs = {}
+
+        function SectionFuncs:TextLabel(text)
+            local label = Instance.new("TextLabel", page)
+            label.Size = UDim2.new(1, -20, 0, 30)
+            label.BackgroundColor3 = Color3.fromRGB(45, 0, 60)
             label.Text = text
-            label.TextColor3 = Color3.fromRGB(255, 255, 255)
-            label.Font = Enum.Font.Gotham
+            label.Font = Enum.Font.GothamSemibold
             label.TextSize = 14
+            label.TextColor3 = Color3.fromRGB(255, 255, 255)
             label.TextXAlignment = Enum.TextXAlignment.Left
-            label.BorderSizePixel = 0
-            label.Parent = container
-
-            local corner = Instance.new("UICorner")
-            corner.CornerRadius = UDim.new(0, 8)
-            corner.Parent = label
+            local corner = Instance.new("UICorner", label)
+            corner.CornerRadius = UDim.new(0, 6)
         end
 
-        function secHandler:TextButton(text, _, callback)
-            local btn = Instance.new("TextButton")
-            btn.Size = UDim2.new(1, -10, 0, 35)
-            btn.BackgroundColor3 = Color3.fromRGB(80, 60, 150)
-            btn.Text = text
-            btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-            btn.Font = Enum.Font.Gotham
-            btn.TextSize = 14
-            btn.AutoButtonColor = true
-            btn.BorderSizePixel = 0
-            btn.Parent = container
-
-            local corner = Instance.new("UICorner")
-            corner.CornerRadius = UDim.new(0, 8)
-            corner.Parent = btn
-
-            btn.MouseButton1Click:Connect(callback)
+        function SectionFuncs:TextButton(text, desc, callback)
+            local button = Instance.new("TextButton", page)
+            button.Size = UDim2.new(1, -20, 0, 30)
+            button.BackgroundColor3 = Color3.fromRGB(80, 0, 120)
+            button.Text = text
+            button.Font = Enum.Font.GothamBold
+            button.TextSize = 14
+            button.TextColor3 = Color3.fromRGB(255, 255, 255)
+            local corner = Instance.new("UICorner", button)
+            corner.CornerRadius = UDim.new(0, 6)
+            button.MouseButton1Click:Connect(callback)
         end
 
-        return secHandler
+        return SectionFuncs
     end
 
-    return handler
+    return OrionFunctions
 end
 
 return Orion
