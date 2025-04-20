@@ -1,75 +1,169 @@
--- Orion Galaxy UI Theme
--- Fichier "Orion.lua" à placer dans ton GitHub
--- Inspiré d'une interface moderne, galaxie, avec animations stylées et toggle Ctrl gauche
+-- 🌌 Orion UI Rework - Thème Galaxie / Pro
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
 local Orion = {}
 
 function Orion:CreateOrion(title)
-    local UserInputService = game:GetService("UserInputService")
-    local TweenService = game:GetService("TweenService")
+    title = title or "Nalah HUB"
+    local isOpen = true
 
-    local ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.Name = "OrionGalaxyUI"
-    ScreenGui.Parent = game.CoreGui
-    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    -- UI Parent
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "OrionGalaxyUI"
+    gui.ResetOnSpawn = false
+    gui.IgnoreGuiInset = true
+    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    gui.Parent = game.CoreGui
 
-    local Main = Instance.new("Frame")
-    Main.Size = UDim2.new(0, 600, 0, 350)
-    Main.Position = UDim2.new(0.3, 0, 0.3, 0)
-    Main.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-    Main.BackgroundTransparency = 0
-    Main.Parent = ScreenGui
+    -- UI Container
+    local main = Instance.new("Frame")
+    main.Name = "MainFrame"
+    main.Size = UDim2.new(0, 600, 0, 350)
+    main.Position = UDim2.new(0.5, -300, 0.5, -175)
+    main.BackgroundColor3 = Color3.fromRGB(20, 18, 30)
+    main.BorderSizePixel = 0
+    main.ClipsDescendants = true
+    main.Parent = gui
 
-    local Corner = Instance.new("UICorner")
-    Corner.CornerRadius = UDim.new(0, 16)
-    Corner.Parent = Main
+    -- Glow Border Effect
+    local glow = Instance.new("UIStroke")
+    glow.Color = Color3.fromRGB(134, 94, 255)
+    glow.Thickness = 2
+    glow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    glow.Transparency = 0.2
+    glow.Parent = main
 
-    local Shadow = Instance.new("ImageLabel")
-    Shadow.Name = "Shadow"
-    Shadow.BackgroundTransparency = 1
-    Shadow.Position = UDim2.new(0, -15, 0, -15)
-    Shadow.Size = UDim2.new(1, 30, 1, 30)
-    Shadow.Image = "rbxassetid://1316045217"
-    Shadow.ImageColor3 = Color3.fromRGB(85, 0, 170)
-    Shadow.ScaleType = Enum.ScaleType.Slice
-    Shadow.SliceCenter = Rect.new(10, 10, 118, 118)
-    Shadow.Parent = Main
+    -- Corner Radius
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 15)
+    corner.Parent = main
 
-    local TitleBar = Instance.new("TextLabel")
-    TitleBar.Size = UDim2.new(1, 0, 0, 40)
-    TitleBar.BackgroundTransparency = 1
-    TitleBar.Text = title or "🌌 Orion Galaxy UI"
-    TitleBar.Font = Enum.Font.GothamBold
-    TitleBar.TextSize = 22
-    TitleBar.TextColor3 = Color3.fromRGB(190, 150, 255)
-    TitleBar.TextStrokeTransparency = 0.8
-    TitleBar.Parent = Main
+    -- Title Bar
+    local header = Instance.new("Frame")
+    header.Size = UDim2.new(1, 0, 0, 40)
+    header.BackgroundColor3 = Color3.fromRGB(40, 20, 70)
+    header.BorderSizePixel = 0
+    header.Parent = main
 
-    local Content = Instance.new("Frame")
-    Content.Name = "Content"
-    Content.Position = UDim2.new(0, 10, 0, 50)
-    Content.Size = UDim2.new(1, -20, 1, -60)
-    Content.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
-    Content.BackgroundTransparency = 0.05
-    Content.Parent = Main
+    local headerCorner = Instance.new("UICorner")
+    headerCorner.CornerRadius = UDim.new(0, 15)
+    headerCorner.Parent = header
 
-    local ContentCorner = Instance.new("UICorner")
-    ContentCorner.CornerRadius = UDim.new(0, 12)
-    ContentCorner.Parent = Content
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, -20, 1, 0)
+    titleLabel.Position = UDim2.new(0, 10, 0, 0)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.TextSize = 18
+    titleLabel.Text = "🌌  " .. title
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.Parent = header
 
-    -- Toggle Ctrl gauche
-    local open = true
+    -- Close Button
+    local close = Instance.new("TextButton")
+    close.Size = UDim2.new(0, 30, 0, 30)
+    close.Position = UDim2.new(1, -35, 0, 5)
+    close.BackgroundTransparency = 1
+    close.Text = "✖"
+    close.TextColor3 = Color3.fromRGB(255, 100, 100)
+    close.Font = Enum.Font.GothamBold
+    close.TextSize = 18
+    close.Parent = header
+
+    close.MouseButton1Click:Connect(function()
+        isOpen = false
+        gui.Enabled = false
+    end)
+
+    -- Ctrl Left Toggle
     UserInputService.InputBegan:Connect(function(input, gp)
         if input.KeyCode == Enum.KeyCode.LeftControl and not gp then
-            open = not open
-            TweenService:Create(Main, TweenInfo.new(0.25, Enum.EasingStyle.Quint), {
-                Position = open and UDim2.new(0.3, 0, 0.3, 0) or UDim2.new(0.3, 0, 1.5, 0)
-            }):Play()
+            isOpen = not isOpen
+            gui.Enabled = isOpen
         end
     end)
 
-    -- Retourne la frame pour ajout de contenu
-    return Content
+    -- Content Area
+    local container = Instance.new("Frame")
+    container.Size = UDim2.new(1, -20, 1, -60)
+    container.Position = UDim2.new(0, 10, 0, 50)
+    container.BackgroundTransparency = 1
+    container.Name = "Container"
+    container.Parent = main
+
+    local layout = Instance.new("UIListLayout")
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Padding = UDim.new(0, 8)
+    layout.Parent = container
+
+    local handler = {}
+
+    function handler:CreateSection(name)
+        local section = Instance.new("Frame")
+        section.Size = UDim2.new(1, 0, 0, 40)
+        section.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
+        section.BorderSizePixel = 0
+        section.Parent = container
+
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0, 8)
+        corner.Parent = section
+
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(1, -10, 1, 0)
+        label.Position = UDim2.new(0, 5, 0, 0)
+        label.BackgroundTransparency = 1
+        label.Text = name
+        label.TextColor3 = Color3.fromRGB(200, 180, 255)
+        label.Font = Enum.Font.GothamSemibold
+        label.TextSize = 16
+        label.TextXAlignment = Enum.TextXAlignment.Left
+        label.Parent = section
+
+        local secHandler = {}
+
+        function secHandler:TextLabel(text)
+            local label = Instance.new("TextLabel")
+            label.Size = UDim2.new(1, -10, 0, 30)
+            label.BackgroundColor3 = Color3.fromRGB(35, 35, 55)
+            label.Text = text
+            label.TextColor3 = Color3.fromRGB(255, 255, 255)
+            label.Font = Enum.Font.Gotham
+            label.TextSize = 14
+            label.TextXAlignment = Enum.TextXAlignment.Left
+            label.BorderSizePixel = 0
+            label.Parent = container
+
+            local corner = Instance.new("UICorner")
+            corner.CornerRadius = UDim.new(0, 8)
+            corner.Parent = label
+        end
+
+        function secHandler:TextButton(text, _, callback)
+            local btn = Instance.new("TextButton")
+            btn.Size = UDim2.new(1, -10, 0, 35)
+            btn.BackgroundColor3 = Color3.fromRGB(80, 60, 150)
+            btn.Text = text
+            btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+            btn.Font = Enum.Font.Gotham
+            btn.TextSize = 14
+            btn.AutoButtonColor = true
+            btn.BorderSizePixel = 0
+            btn.Parent = container
+
+            local corner = Instance.new("UICorner")
+            corner.CornerRadius = UDim.new(0, 8)
+            corner.Parent = btn
+
+            btn.MouseButton1Click:Connect(callback)
+        end
+
+        return secHandler
+    end
+
+    return handler
 end
 
 return Orion
