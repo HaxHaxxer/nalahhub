@@ -17,13 +17,7 @@ UIS.InputBegan:Connect(function(input, gp)
 	end
 end)
 
--- Création de la fenêtre principale
-local UI = Orion:MakeWindow({
-	Name = "🌌 Nalah HUB - Arise Crossover",
-	IntroText = "Chargement du HUB...",
-	SaveConfig = true,
-	ConfigFolder = "NalahHub"
-})
+local UI = Orion:CreateOrion("🌌 Nalah HUB - Arise Crossover")
 
 -- ACCUEIL
 local HomeTab = UI:MakeTab({
