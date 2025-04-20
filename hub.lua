@@ -1,4 +1,4 @@
-local Orion = loadstring(readfile("Orion.lua"))()
+local Orion = loadstring(game:HttpGet("https://raw.githubusercontent.com/HaxHaxxer/nalahhub/main/Orion.lua"))()
 local UI = Orion:CreateOrion("🌌 Nalah HUB - Arise Crossover")
 
 local TPSection = UI:CreateSection("🌍 Toutes les îles")
